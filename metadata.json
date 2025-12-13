@@ -1,0 +1,5 @@
+{
+  "name": "Levofloxacin Dosing Calculator",
+  "description": "A clinical decision support tool for Levofloxacin dosing, safety assessment, and pharmacokinetic calculations with multi-language support.",
+  "requestFramePermissions": []
+}
