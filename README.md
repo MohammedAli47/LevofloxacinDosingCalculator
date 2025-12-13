@@ -1,20 +1,64 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Levofloxacin Dosing Calculator
 
-# Run and deploy your AI Studio app
+A clinical decision support tool designed to assist healthcare professionals in calculating Levofloxacin dosing, assessing safety parameters (QTc risk, contraindications), and managing patient history.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/drive/11YS7Kk4ixd586_1soU9px7_ATYSIe-xA
+- **Renal Dosing Calculator**: Automatically calculates Creatinine Clearance (Cockcroft-Gault) and recommends dosing regimens (Oral/IV) based on renal function (Normal, Mild/Moderate, Severe, ESRD).
+- **Pharmacokinetic Analysis**: Estimates CL, Vd, t½, AUC, and Cmax.
+- **Safety Assessment**:
+  - **Contraindication Check**: Age < 18, Pregnancy, Myasthenia Gravis, Epilepsy, Allergy.
+  - **QT Prolongation Risk**: Tisdale-like risk scoring algorithm (Low, Moderate, High).
+  - **Drug-Drug Interactions**: Checks for QT-prolonging meds, corticosteroids, NSAIDs, etc.
+- **Patient History**: Local database (IndexedDB) to save and retrieve previous patient assessments.
+- **Multi-language Support**: Full English and Arabic UI.
+- **Print Friendly**: Dedicated print layout for medical records.
 
-## Run Locally
+## Tech Stack
 
-**Prerequisites:**  Node.js
+- **Framework**: React 18
+- **Language**: TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS
+- **Database**: IndexedDB (Client-side storage)
+- **Icons**: Lucide React
 
+## File Structure
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- **`App.tsx`**: Main application controller and UI layout.
+- **`logic.ts`**: Core medical algorithms (CrCl, PK parameters, QT scoring).
+- **`db.ts`**: IndexedDB service for persistent patient storage.
+- **`constants.ts`**: Static data, initial states, and translation dictionaries.
+- **`types.ts`**: TypeScript interfaces for type safety.
+
+## Local Development
+
+1.  Install dependencies:
+    ```bash
+    npm install
+    ```
+2.  Start the development server:
+    ```bash
+    npm run dev
+    ```
+
+## Deployment on Netlify
+
+This project is configured for easy deployment on Netlify.
+
+1.  **Push to Git**: Push this repository to GitHub, GitLab, or Bitbucket.
+2.  **Import to Netlify**:
+    - Log in to Netlify and click "Add new site".
+    - Select "Import an existing project".
+    - Choose your repository.
+3.  **Build Settings**:
+    - **Build command**: `npm run build`
+    - **Publish directory**: `dist`
+4.  **Deploy**: Click "Deploy site".
+
+Netlify will automatically detect the `package.json` and build the application using Vite.
+
+## Disclaimer
+
+**For educational and clinical decision support purposes only.**
+This tool is intended to assist healthcare professionals. It does not replace clinical judgment. Always verify calculations and consult the latest prescribing information.
