@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   AlertCircle, CheckCircle, AlertTriangle, Info, Calculator, Pill, 
@@ -32,7 +33,7 @@ const InputField = React.memo(({
   placeholder?: string;
   options?: { value: string, label: string }[];
 }) => (
-  <div className="mb-4">
+  <div className="mb-4 text-start">
     <label className="block text-sm font-semibold text-slate-700 mb-2">
       {label}
       {error && <span className="text-red-500 mx-1">*</span>}
@@ -226,7 +227,7 @@ export default function App() {
       p.data.age === formData.age &&
       p.data.weight === formData.weight &&
       p.result.pkParams?.crcl === results.pkParams?.crcl &&
-      p.result.timestamp > Date.now() - 60000 // Duplicate if same params within a minute
+      p.result.timestamp > Date.now() - 60000 
     );
 
     if (isDuplicate) {
@@ -284,70 +285,72 @@ export default function App() {
   };
 
   return (
-    <div dir={lang === 'ar' ? 'rtl' : 'ltr'} className="min-h-screen bg-slate-50 font-sans text-slate-800 flex flex-col">
+    <div dir={lang === 'ar' ? 'rtl' : 'ltr'} className="min-h-screen bg-white font-sans text-slate-800 flex flex-col">
       
       {showLanding ? (
-        <div className="flex-1 flex flex-col">
-          <nav className="p-6 max-w-7xl mx-auto w-full flex justify-between items-center">
+        <div className="flex-1 flex flex-col relative overflow-hidden bg-white">
+          <nav className="relative z-10 p-6 max-w-7xl mx-auto w-full flex justify-between items-center">
             <div className="flex items-center gap-3">
-               <div className="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-teal-600/20">
+               <div className="w-10 h-10 bg-[#0d9488] rounded-xl flex items-center justify-center shadow-lg shadow-[#0d9488]/20">
                   <Pill className="w-6 h-6 text-white" />
                 </div>
                 <span className="text-xl font-bold text-slate-900 tracking-tight">LevoCalc</span>
             </div>
             <button 
               onClick={toggleLanguage}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl text-sm font-medium text-slate-600 transition-all shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-white/70 backdrop-blur-sm border border-slate-200 hover:bg-slate-50 rounded-xl text-sm font-medium text-slate-600 transition-all shadow-sm"
             >
-              <Globe size={16} />
+              <Globe size={16} className="text-[#0d9488]" />
               {lang === 'en' ? 'العربية' : 'English'}
             </button>
           </nav>
 
-          <main className="flex-1 flex flex-col items-center justify-center px-6 py-12 text-center">
-            <div className="w-20 h-20 bg-teal-100 text-teal-600 rounded-3xl flex items-center justify-center mb-8 animate-bounce-slow">
-              <Stethoscope size={40} />
-            </div>
-            <h1 className="text-5xl md:text-7xl font-black text-slate-900 mb-6 leading-tight">
-              LevoCalc
-            </h1>
-            <p className="text-xl text-slate-500 max-w-2xl mb-12 leading-relaxed">
-              {t.landingTagline}
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
-              <button 
-                onClick={() => setShowLanding(false)}
-                className="flex-1 px-8 py-5 bg-teal-600 text-white rounded-2xl font-bold text-lg hover:bg-teal-700 shadow-xl shadow-teal-600/30 transition-all hover:-translate-y-1 flex items-center justify-center gap-3"
-              >
-                {t.startAssessment}
-                {lang === 'ar' ? <ChevronLeft /> : <ChevronRight />}
-              </button>
-              <button 
-                onClick={() => setShowHistory(true)}
-                className="px-8 py-5 bg-white border-2 border-slate-100 text-slate-600 rounded-2xl font-bold text-lg hover:bg-slate-50 transition-all flex items-center justify-center gap-3"
-              >
-                <History size={20} />
-                {t.history}
-              </button>
+          <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12 text-center">
+            <div className="flex flex-col items-center max-w-4xl">
+              <div className="w-20 h-20 bg-[#CCFBF1] text-[#0d9488] rounded-3xl flex items-center justify-center mb-8 animate-bounce-slow shadow-sm">
+                <Stethoscope size={40} />
+              </div>
+              <h1 className="text-6xl md:text-8xl font-black text-slate-900 mb-6 leading-tight tracking-tighter">
+                LevoCalc
+              </h1>
+              <p className="text-xl md:text-2xl text-slate-500 max-w-2xl mb-12 leading-relaxed font-medium">
+                {t.landingTagline}
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+                <button 
+                  onClick={() => setShowLanding(false)}
+                  className="flex-1 px-8 py-5 bg-[#0d9488] text-white rounded-2xl font-bold text-xl hover:bg-[#0c7e75] shadow-2xl shadow-[#0d9488]/30 transition-all hover:-translate-y-1 flex items-center justify-center gap-3 active:scale-95"
+                >
+                  {t.startAssessment}
+                  <ChevronRight size={20} className={lang === 'ar' ? 'rotate-180' : ''} />
+                </button>
+                <button 
+                  onClick={() => setShowHistory(true)}
+                  className="flex-1 px-8 py-5 bg-white border-2 border-slate-100 text-slate-600 rounded-2xl font-bold text-xl hover:bg-slate-50 transition-all flex items-center justify-center gap-3 shadow-sm active:scale-95"
+                >
+                  <History size={20} className="text-slate-400" />
+                  {t.history}
+                </button>
+              </div>
             </div>
           </main>
-          <footer className="p-8 text-center text-slate-400 text-xs">
-            <p>{t.disclaimer}</p>
+          <footer className="relative z-10 p-8 text-center text-slate-400 text-xs">
+            <p className="max-w-xl mx-auto opacity-70">{t.disclaimer}</p>
           </footer>
         </div>
       ) : (
-        <div className="py-8 px-4 flex-1">
+        <div className="py-8 px-4 flex-1 bg-slate-50">
           <div className="max-w-3xl mx-auto">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 mb-6 relative overflow-hidden">
               <div className="flex flex-col-reverse md:flex-row md:justify-between md:items-start gap-4">
                 <div className="flex items-start gap-5 cursor-pointer" onClick={() => setShowLanding(true)}>
-                  <div className="w-14 h-14 bg-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-600/20 shrink-0">
+                  <div className="w-14 h-14 bg-[#0d9488] rounded-2xl flex items-center justify-center shadow-lg shadow-[#0d9488]/20 shrink-0">
                     <Pill className="w-8 h-8 text-white" />
                   </div>
-                  <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2 leading-tight">LevoCalc</h1>
-                    <p className="text-slate-500 text-sm md:text-base leading-relaxed max-w-xl">
+                  <div className="text-start">
+                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-1 leading-tight tracking-tight">LevoCalc</h1>
+                    <p className="text-slate-500 text-sm md:text-base leading-relaxed max-w-xl opacity-80">
                       {t.appSubtitle}
                     </p>
                   </div>
@@ -370,8 +373,8 @@ export default function App() {
               <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 relative">
                 {step === 1 && (
                   <div className="animate-fade-in">
-                    <div className="flex items-center gap-2 mb-6 text-teal-700 font-medium">
-                      <span className="w-1 h-6 bg-teal-500 rounded-full"></span>{t.step1}
+                    <div className="flex items-center gap-2 mb-6 text-[#0d9488] font-medium">
+                      <span className="w-1 h-6 bg-[#0d9488] rounded-full"></span>{t.step1}
                     </div>
                     
                     <div className="grid md:grid-cols-2 gap-x-6">
@@ -384,7 +387,7 @@ export default function App() {
                     </div>
 
                     {formData.gender === 'female' && (
-                      <div className="mt-6 p-6 bg-pink-50 rounded-2xl border border-pink-100 animate-fade-in">
+                      <div className="mt-6 p-6 bg-pink-50 rounded-2xl border border-pink-100 animate-fade-in text-start">
                         <label className="block text-sm font-bold text-pink-900 mb-4">{t.pregnancyStatus}</label>
                         <div className="grid grid-cols-2 gap-4">
                           <button onClick={() => handleInputChange('pregnant', 'no')} className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${formData.pregnant === 'no' ? 'bg-white border-pink-500 shadow-md text-pink-700' : 'bg-white/50 border-transparent hover:bg-white text-slate-500'}`}><Ban size={24} /><span className="font-semibold">{t.notPregnant}</span></button>
@@ -397,9 +400,9 @@ export default function App() {
 
                 {step === 2 && (
                   <div className="animate-fade-in space-y-8">
-                    <div className="flex items-center gap-2 mb-6 text-teal-700 font-medium"><span className="w-1 h-6 bg-teal-500 rounded-full"></span>{t.step2}</div>
+                    <div className="flex items-center gap-2 mb-6 text-[#0d9488] font-medium"><span className="w-1 h-6 bg-[#0d9488] rounded-full"></span>{t.step2}</div>
                     <div className="space-y-4">
-                      <div className="flex items-center gap-3 mb-3"><div className="h-px bg-slate-200 flex-1"></div><h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">{t.medicalHistory}</h3><div className="h-px bg-slate-200 flex-1"></div></div>
+                      <div className="flex items-center gap-3 mb-3 text-start"><div className="h-px bg-slate-200 flex-1"></div><h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">{t.medicalHistory}</h3><div className="h-px bg-slate-200 flex-1"></div></div>
                       <div className="grid md:grid-cols-2 gap-4">
                         <SelectionCard label={t.myastheniaGravis} field="myastheniaGravis" checked={formData.myastheniaGravis} onChange={handleInputChange} />
                         <SelectionCard label={t.epilepsy} field="epilepsy" checked={formData.epilepsy} onChange={handleInputChange} />
@@ -410,7 +413,7 @@ export default function App() {
                       </div>
                     </div>
                     <div className="space-y-4">
-                      <div className="flex items-center gap-3 mb-3"><div className="h-px bg-slate-200 flex-1"></div><h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">{t.currentMedications}</h3><div className="h-px bg-slate-200 flex-1"></div></div>
+                      <div className="flex items-center gap-3 mb-3 text-start"><div className="h-px bg-slate-200 flex-1"></div><h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">{t.currentMedications}</h3><div className="h-px bg-slate-200 flex-1"></div></div>
                       <div className="grid md:grid-cols-2 gap-4">
                         <SelectionCard label={t.antiarrhythmics} field="antiarrhythmics" checked={formData.antiarrhythmics} onChange={handleInputChange} /><SelectionCard label={t.antipsychotics} field="antipsychotics" checked={formData.antipsychotics} onChange={handleInputChange} /><SelectionCard label={t.antidepressants} field="antidepressants" checked={formData.antidepressants} onChange={handleInputChange} /><SelectionCard label={t.macrolides} field="macrolides" checked={formData.macrolides} onChange={handleInputChange} /><SelectionCard label={t.antifungals} field="antifungals" checked={formData.antifungals} onChange={handleInputChange} /><SelectionCard label={t.otherQt} field="otherQtDrugs" checked={formData.otherQtDrugs} onChange={handleInputChange} /><SelectionCard label={t.corticosteroids} field="corticosteroids" checked={formData.corticosteroids} onChange={handleInputChange} /><SelectionCard label={t.diabetesMeds} field="diabetesMeds" checked={formData.diabetesMeds} onChange={handleInputChange} /><SelectionCard label={t.nsaids} field="nsaids" checked={formData.nsaids} onChange={handleInputChange} />
                       </div>
@@ -420,7 +423,7 @@ export default function App() {
 
                 {step === 3 && (
                   <div className="animate-fade-in">
-                    <div className="flex items-center gap-2 mb-6 text-teal-700 font-medium"><span className="w-1 h-6 bg-teal-500 rounded-full"></span>{t.step3}</div>
+                    <div className="flex items-center gap-2 mb-6 text-[#0d9488] font-medium"><span className="w-1 h-6 bg-[#0d9488] rounded-full"></span>{t.step3}</div>
                     <div className="grid md:grid-cols-2 gap-6">
                       <InputField label={t.scr} field="scr" value={formData.scr} error={errors.scr} onChange={handleInputChange} lang={lang} type="number" placeholder={t.placeholderScr} /><InputField label={`${t.qtc} ${t.optional}`} field="qtc" value={formData.qtc} error={errors.qtc} onChange={handleInputChange} lang={lang} type="number" placeholder={t.placeholderQtc} /><InputField label={t.potassium} field="potassium" value={formData.potassium} onChange={handleInputChange} lang={lang} type="number" placeholder={t.placeholderPotassium} /><InputField label={t.magnesium} field="magnesium" value={formData.magnesium} onChange={handleInputChange} lang={lang} type="number" placeholder={t.placeholderMagnesium} /><InputField label={t.calcium} field="calcium" value={formData.calcium} onChange={handleInputChange} lang={lang} type="number" placeholder={t.placeholderCalcium} /><InputField label={t.heartRate} field="heartRate" value={formData.heartRate} onChange={handleInputChange} lang={lang} type="number" placeholder={t.placeholderHeartRate} /><InputField label={t.respRate} field="respiratoryRate" value={formData.respiratoryRate} onChange={handleInputChange} lang={lang} type="number" placeholder={t.placeholderRespRate} />
                     </div>
@@ -433,7 +436,7 @@ export default function App() {
                   ) : (
                     <button onClick={() => setShowLanding(true)} className="px-6 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 transition-colors flex items-center gap-2">{lang === 'ar' ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}{t.home}</button>
                   )}
-                  <button onClick={step === 3 ? handleCalculate : handleNext} className="px-8 py-3 rounded-xl bg-teal-600 text-white font-semibold hover:bg-teal-700 shadow-lg shadow-teal-600/30 transition-all flex items-center gap-2">{step === 3 ? <><Calculator size={18} />{t.calculate}</> : <>{t.next}{lang === 'ar' ? <ChevronLeft size={18} /> : <ChevronRight size={18} /></>}</button>
+                  <button onClick={step === 3 ? handleCalculate : handleNext} className="px-8 py-3 rounded-xl bg-[#0d9488] text-white font-semibold hover:bg-[#0c7e75] shadow-lg shadow-[#0d9488]/30 transition-all flex items-center gap-2 active:scale-95">{step === 3 ? <><Calculator size={18} />{t.calculate}</> : <>{t.next}{lang === 'ar' ? <ChevronLeft size={18} /> : <ChevronRight size={18} /></>}</button>
                 </div>
               </div>
             )}
@@ -445,13 +448,13 @@ export default function App() {
                     <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6"><AlertCircle className="w-10 h-10 text-red-500" /></div>
                     <h2 className="text-2xl font-bold text-red-600 mb-6">{t.contraindicationsDetected}</h2>
                     <div className="space-y-4 text-left">
-                      {results.contraindications.map((contra, idx) => (<div key={idx} className="bg-red-50 border border-red-200 rounded-xl p-4"><h3 className="font-bold text-red-800 mb-1">{contra.title}</h3><p className="text-red-700 text-sm">{contra.message}</p></div>))}
+                      {results.contraindications.map((contra, idx) => (<div key={idx} className="bg-red-50 border border-red-200 rounded-xl p-4 text-start"><h3 className="font-bold text-red-800 mb-1">{contra.title}</h3><p className="text-red-700 text-sm">{contra.message}</p></div>))}
                     </div>
                     <button onClick={resetForm} className="mt-8 px-8 py-3 bg-slate-800 text-white rounded-xl hover:bg-slate-900 font-medium inline-flex items-center gap-2"><RotateCcw size={18} />{t.startNew}</button>
                   </div>
                 ) : (
                   <>
-                    <div className="bg-teal-600 rounded-2xl shadow-lg shadow-teal-600/20 p-6 text-white">
+                    <div className="bg-[#0d9488] rounded-2xl shadow-lg shadow-[#0d9488]/20 p-6 text-white text-start">
                       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div className="flex items-center gap-4">
                           <div className="bg-white/20 p-3 rounded-full shrink-0"><CheckCircle className="w-8 h-8" /></div>
@@ -460,11 +463,11 @@ export default function App() {
                             <p className="text-teal-100 opacity-90">{t.patient}: <span className="font-semibold">{DOSE_OPTIONS.find(o => o.id === formData.dose)?.label || 'N/A'}</span></p>
                           </div>
                         </div>
-                        <button onClick={savePatient} disabled={saveStatus === 'success' || saveStatus === 'duplicate'} className={`px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center gap-2 shrink-0 ${saveStatus === 'success' ? 'bg-green-100 text-green-700' : saveStatus === 'duplicate' ? 'bg-amber-100 text-amber-700' : 'bg-white text-teal-700 hover:bg-teal-50'}`}>{saveStatus === 'success' ? <Check size={18} /> : saveStatus === 'duplicate' ? <AlertCircle size={18} /> : <Save size={18} />}{saveStatus === 'success' ? t.savedSuccess : saveStatus === 'duplicate' ? 'Duplicate' : t.save}</button>
+                        <button onClick={savePatient} disabled={saveStatus === 'success' || saveStatus === 'duplicate'} className={`px-4 py-2 rounded-lg font-medium shadow-sm transition-all flex items-center gap-2 shrink-0 active:scale-95 ${saveStatus === 'success' ? 'bg-green-100 text-green-700' : saveStatus === 'duplicate' ? 'bg-amber-100 text-amber-700' : 'bg-white text-[#0d9488] hover:bg-teal-50'}`}>{saveStatus === 'success' ? <Check size={18} /> : saveStatus === 'duplicate' ? <AlertCircle size={18} /> : <Save size={18} />}{saveStatus === 'success' ? t.savedSuccess : saveStatus === 'duplicate' ? 'Duplicate' : t.save}</button>
                       </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden text-start">
                       <div className="p-6 border-b border-slate-100 flex items-center gap-3"><div className="p-2 bg-indigo-50 rounded-lg text-indigo-600"><Pill size={20} /></div><h3 className="text-lg font-bold text-slate-800">{t.dosingRec}</h3></div>
                       <div className="p-6">
                         <div className="bg-indigo-50 rounded-xl p-5 border border-indigo-100 mb-6">
@@ -480,8 +483,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* Pharmacokinetic Parameters Block */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden text-start">
                       <div className="p-6 border-b border-slate-100 flex items-center gap-3"><div className="p-2 bg-slate-100 rounded-lg text-slate-600"><Calculator size={20} /></div><h3 className="text-lg font-bold text-slate-800">{t.pkParams}</h3></div>
                       <div className="p-6 grid grid-cols-2 md:grid-cols-3 gap-4">
                          {[
@@ -489,7 +491,7 @@ export default function App() {
                            { label: t.pkVd, val: `${results.pkParams?.vd} L` }, 
                            { label: t.pkHl, val: `${results.pkParams?.halfLife} h` }, 
                            { label: t.pkCmax, val: `${results.pkParams?.cmax} mg/L` }, 
-                           { label: t.pkBmi, val: results.pkParams?.bmi }, 
+                           { label: t.pkTmax, val: `${results.pkParams?.tmax} h` }, 
                            { label: t.pkAuc, val: `${results.pkParams?.auc} mg·h/L` }
                          ].map((item, i) => (
                           <div key={i} className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
@@ -500,8 +502,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* QT Prolongation Risk Assessment Block */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden text-start">
                        <div className="p-6 border-b border-slate-100 flex items-center gap-3"><div className="p-2 bg-red-50 rounded-lg text-red-600"><Activity size={20} /></div><h3 className="text-lg font-bold text-slate-800">{t.qtAssessment}</h3></div>
                        <div className="p-6">
                          <div className={`p-5 rounded-xl border-l-4 mb-6 ${results.qtRisk?.color === 'red' ? 'bg-red-50 border-red-500 text-red-900' : results.qtRisk?.color === 'orange' ? 'bg-orange-50 border-orange-500 text-orange-900' : 'bg-emerald-50 border-emerald-500 text-emerald-900'}`}><div className="flex justify-between items-center mb-2"><span className="text-xl font-bold">{results.qtRisk?.level}</span><span className="text-sm font-semibold px-3 py-1 bg-white/50 rounded-full">{t.riskScore}: {results.qtRisk?.score}/7</span></div><p className="font-medium opacity-90">{results.qtRisk?.recommendation}</p></div>
@@ -509,14 +510,12 @@ export default function App() {
                        </div>
                     </div>
 
-                    {/* NEW: Clinical Guidance & Counseling Section */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden text-start">
                       <div className="p-6 border-b border-slate-100 flex items-center gap-3">
-                        <div className="p-2 bg-teal-50 rounded-lg text-teal-600"><BookOpen size={20} /></div>
+                        <div className="p-2 bg-teal-50 rounded-lg text-[#0d9488]"><BookOpen size={20} /></div>
                         <h3 className="text-lg font-bold text-slate-800">{t.clinicalGuidance}</h3>
                       </div>
                       <div className="p-6 space-y-4">
-                        {/* Always visible: Sunlight & Tendon Tips */}
                         <div className="flex gap-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
                           <Sun className="text-emerald-600 shrink-0" size={24} />
                           <p className="text-sm text-emerald-900 leading-relaxed font-medium">{t.tipSunlight}</p>
@@ -526,7 +525,6 @@ export default function App() {
                           <p className="text-sm text-amber-900 leading-relaxed font-medium">{t.tipTendons}</p>
                         </div>
                         
-                        {/* Contextual: Hydration for Renal Impairment */}
                         {(parseFloat(results.pkParams?.crcl || "0") < 50) && (
                           <div className="flex gap-4 p-4 bg-blue-50 rounded-xl border border-blue-100 animate-fade-in">
                             <Droplets className="text-blue-600 shrink-0" size={24} />
@@ -534,7 +532,6 @@ export default function App() {
                           </div>
                         )}
 
-                        {/* Contextual: QT Symptoms reporting for High/Moderate risk */}
                         {(results.qtRisk?.score || 0) >= 3 && (
                           <div className="flex gap-4 p-4 bg-rose-50 rounded-xl border border-rose-100 animate-fade-in">
                             <HeartPulse className="text-rose-600 shrink-0" size={24} />
@@ -542,7 +539,6 @@ export default function App() {
                           </div>
                         )}
 
-                        {/* Contextual: Blood Glucose for Diabetes patients */}
                         {formData.diabetesMeds && (
                           <div className="flex gap-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100 animate-fade-in">
                             <Gauge className="text-indigo-600 shrink-0" size={24} />
@@ -550,7 +546,6 @@ export default function App() {
                           </div>
                         )}
 
-                        {/* Always visible: Completion advice */}
                         <div className="flex gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
                           <CheckCircle className="text-slate-500 shrink-0" size={24} />
                           <p className="text-sm text-slate-700 leading-relaxed font-medium">{t.tipCompletion}</p>
@@ -558,9 +553,31 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden text-start">
                       <div className="p-6 border-b border-slate-100 flex items-center gap-3">
-                        <div className="p-2 bg-amber-50 rounded-lg text-amber-600"><MessageSquare size={20} /></div>
+                        <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600"><Info size={20} /></div>
+                        <h3 className="text-lg font-bold text-slate-800">{t.adminInfo}</h3>
+                      </div>
+                      <div className="p-6 space-y-4">
+                        <p className="text-sm font-semibold text-slate-700 mb-2">{t.chelationIntro}</p>
+                        <ul className="space-y-2 ml-4 mr-4">
+                          {t.chelationItems.map((item, idx) => (
+                            <li key={idx} className="text-sm text-slate-600 flex items-start gap-2">
+                              <span className="shrink-0">{item.split(' ')[0]}</span>
+                              <span>{item.split(' ').slice(1).join(' ')}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-6 p-4 bg-teal-50 rounded-xl border border-teal-100">
+                          <p className="text-sm font-bold text-[#0d9488] mb-2">{t.timingRuleTitle}</p>
+                          <p className="text-sm text-teal-800 leading-relaxed font-medium">{t.timingRuleText}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden text-start">
+                      <div className="p-6 border-b border-slate-100 flex items-center gap-3">
+                        <div className="p-2 bg-amber-50 rounded-lg text-[#fbbf24]"><MessageSquare size={20} /></div>
                         <h3 className="text-lg font-bold text-slate-800">{t.extraEffects}</h3>
                       </div>
                       <div className="p-6 space-y-6">
@@ -571,13 +588,13 @@ export default function App() {
                               value={newEffectText}
                               onChange={(e) => setNewEffectText(e.target.value)}
                               placeholder={t.reportPlaceholder}
-                              className="flex-1 p-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm h-24"
+                              className="flex-1 p-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0d9488] text-sm h-24"
                             />
                           </div>
                           <button 
                             onClick={submitSideEffect}
                             disabled={!newEffectText.trim()}
-                            className="mt-3 w-full py-2 bg-teal-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-teal-700 transition-colors disabled:opacity-50"
+                            className="mt-3 w-full py-2 bg-[#0d9488] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#0c7e75] transition-colors disabled:opacity-50 active:scale-95"
                           >
                             <Send size={16} /> {t.submitReport}
                           </button>
@@ -586,7 +603,7 @@ export default function App() {
                         {sideEffects.length > 0 && (
                           <div className="space-y-4">
                             <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                              <CheckCircle size={14} className="text-teal-500" /> {t.otherReports}
+                              <CheckCircle size={14} className="text-[#0d9488]" /> {t.otherReports}
                             </h4>
                             <div className="grid gap-3">
                               {sideEffects.slice(0, 5).map(effect => (
@@ -606,7 +623,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="flex gap-4 print:hidden"><button onClick={resetForm} className="flex-1 py-4 bg-teal-600 text-white rounded-xl hover:bg-teal-700 font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-teal-600/20 hover:shadow-teal-600/30 hover:-translate-y-0.5">{t.startNew}</button><button onClick={() => window.print()} className="flex-1 py-4 bg-white border-2 border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 font-medium flex items-center justify-center gap-2 transition-colors"><Printer size={18} />{t.print}</button></div>
+                    <div className="flex gap-4 print:hidden"><button onClick={resetForm} className="flex-1 py-4 bg-[#0d9488] text-white rounded-xl hover:bg-[#0c7e75] font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#0d9488]/20 hover:shadow-[#0d9488]/30 active:scale-[0.98]">{t.startNew}</button><button onClick={() => window.print()} className="flex-1 py-4 bg-white border-2 border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 font-medium flex items-center justify-center gap-2 transition-colors active:scale-[0.98]"><Printer size={18} />{t.print}</button></div>
                   </>
                 )}
               </div>
@@ -615,11 +632,10 @@ export default function App() {
         )}
       )}
 
-      {/* Unified History Modal - accessible from everywhere */}
       {showHistory && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col animate-fade-in">
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-2xl">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col animate-fade-in">
+            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-3xl">
               <div className="flex items-center gap-3">
                 <History className="text-indigo-600" />
                 <h2 className="text-xl font-bold text-slate-800">{t.history}</h2>
@@ -632,7 +648,7 @@ export default function App() {
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-6 text-start">
               {savedPatients.length === 0 ? (
                 <div className="text-center py-12 text-slate-400">
                   <History size={48} className="mx-auto mb-4 opacity-30" />
@@ -673,7 +689,7 @@ export default function App() {
                 </div>
               )}
             </div>
-            <div className="p-4 border-t border-slate-100 bg-slate-50 rounded-b-2xl">
+            <div className="p-4 border-t border-slate-100 bg-slate-50 rounded-b-3xl">
               <button 
                 onClick={() => setShowHistory(false)} 
                 className="w-full py-3 bg-white border border-slate-200 text-slate-600 font-medium rounded-xl hover:bg-slate-100 transition-colors"

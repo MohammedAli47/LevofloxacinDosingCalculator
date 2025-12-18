@@ -1,3 +1,4 @@
+
 import { FormData } from './types';
 
 export const INITIAL_FORM_DATA: FormData = {
@@ -202,6 +203,7 @@ export const TRANSLATIONS = {
     pkCmax: 'Cmax',
     pkBmi: 'BMI',
     pkAuc: 'AUC',
+    pkTmax: 'Tmax',
     clinicalGuidance: 'Clinical Guidance & Patient Counseling',
     tipHydration: 'Maintain adequate hydration to prevent crystalluria, particularly in patients with renal impairment.',
     tipSunlight: 'Avoid excessive sunlight or UV exposure; Levofloxacin may cause significant photosensitivity.',
@@ -209,6 +211,18 @@ export const TRANSLATIONS = {
     tipQtSymptoms: 'Report any sudden dizziness, racing heart, or fainting episodes immediately.',
     tipGlucose: 'Monitor blood glucose closely; fluctuations may occur with concurrent diabetes therapy.',
     tipCompletion: 'Emphasize the importance of finishing the full course to prevent bacterial resistance.',
+    chelationIntro: 'These bind levofloxacin in the gut and make it much less effective:',
+    chelationItems: [
+      '🥛 Milk & dairy products (milk, yogurt, cheese)',
+      '🧃 Calcium-fortified juices',
+      '💊 Antacids (magnesium, aluminum)',
+      '💊 Iron supplements',
+      '💊 Zinc supplements',
+      '💊 Sucralfate',
+      '💊 Multivitamins with minerals'
+    ],
+    timingRuleTitle: '⏱ Proper Timing Rule:',
+    timingRuleText: 'Take Levofloxacin at least 2 hours BEFORE these products OR 6 hours AFTER these products.',
   },
   ar: {
     appTitle: 'LevoCalc',
@@ -360,6 +374,7 @@ export const TRANSLATIONS = {
     pkCmax: 'التركيز الأقصى (Cmax)',
     pkBmi: 'كتلة الجسم (BMI)',
     pkAuc: 'المساحة (AUC)',
+    pkTmax: 'Tmax',
     clinicalGuidance: 'التوجيهات الإكلينيكية ونصائح المريض',
     tipHydration: 'الحرص على شرب كميات كافية من السوائل لمنع ترسب البلورات في الكلى، خاصة في حالات القصور الكلوي.',
     tipSunlight: 'تجنب التعرض المفرط لأشعة الشمس أو الأشعة فوق البنفسجية؛ حيث يمكن أن يسبب الدواء حساسية ضوئية شديدة.',
@@ -367,5 +382,17 @@ export const TRANSLATIONS = {
     tipQtSymptoms: 'إبلاغ الفريق الطبي فوراً عن أي شعور بدوار مفاجئ، خفقان في القلب، أو نوبات إغماء.',
     tipGlucose: 'مراقبة مستوى السكر في الدم بدقة؛ قد تحدث تقلبات لمرضى السكري الذين يتناولون أدوية السكر.',
     tipCompletion: 'التأكيد على أهمية إكمال الدورة العلاجية بالكامل لضمان القضاء على البكتيريا ومنع مقاومة المضادات الحيوية.',
+    chelationIntro: 'هذه المواد ترتبط بالليفوفلوكساسين في الأمعاء وتجعله أقل فاعلية بكثير:',
+    chelationItems: [
+      '🥛 الحليب ومنتجات الألبان (حليب، زبادي، جبن)',
+      '🧃 العصائر المدعمة بالسكالسيوم',
+      '💊 مضادات الحموضة (المغنيسيوم، الألومنيوم)',
+      '💊 مكملات الحديد',
+      '💊 مكملات الزنك',
+      '💊 سوكرالفات',
+      '💊 الفيتامينات المتعددة مع المعادن'
+    ],
+    timingRuleTitle: '⏱ قاعدة التوقيت الصحيح:',
+    timingRuleText: 'يؤخذ ليفوفلوكساسين قبل ساعتين على الأقل من هذه المنتجات أو بعد 6 ساعات منها.',
   }
 };
