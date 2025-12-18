@@ -7,10 +7,11 @@ export interface FormData {
   name: string;
   age: string;
   weight: string;
+  height: string;
   gender: Gender;
   pregnant: 'yes' | 'no';
   route: Route;
-  dose: '250' | '500' | '750';
+  dose: string; // Selection from indication list
 
   // Lab Values
   scr: string;
@@ -49,6 +50,12 @@ export interface ValidationErrors {
   [key: string]: string;
 }
 
+export interface SideEffectReport {
+  id: string;
+  text: string;
+  timestamp: number;
+}
+
 export interface CalculationResult {
   contraindications: { title: string; message: string }[];
   blocked: boolean;
@@ -62,6 +69,7 @@ export interface CalculationResult {
     auc: string;
     cmax: string;
     tmax: string;
+    bmi: string;
   };
   doseRec?: {
     status: string;

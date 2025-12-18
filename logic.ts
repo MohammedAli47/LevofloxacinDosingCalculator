@@ -1,9 +1,7 @@
 import { FormData, CalculationResult } from './types';
-import { TRANSLATIONS } from './constants';
+import { TRANSLATIONS, DOSE_OPTIONS } from './constants';
 
-type Lang = 'en' | 'ar';
-
-export const calculateResults = (formData: FormData, lang: Lang): CalculationResult => {
+export const calculateResults = (formData: FormData, lang: 'en' | 'ar'): CalculationResult => {
   const t = TRANSLATIONS[lang];
 
   // 1. Contraindications
@@ -51,118 +49,114 @@ export const calculateResults = (formData: FormData, lang: Lang): CalculationRes
   // 2. PK Parameters
   const age = parseFloat(formData.age);
   const weight = parseFloat(formData.weight);
+  const height = parseFloat(formData.height);
   const scr = parseFloat(formData.scr);
-  const dose = parseFloat(formData.dose);
   
-  // Cockcroft-Gault Equation
+  // Find selected dose numeric value
+  const selectedDoseObj = DOSE_OPTIONS.find(opt => opt.id === formData.dose);
+  const doseValue = selectedDoseObj ? selectedDoseObj.dose : 500;
+  
+  // Cockcroft-Gault Equation (CrCl)
   let crcl = (weight * (140 - age)) / (72 * scr);
   if (formData.gender === 'female') {
     crcl = crcl * 0.85;
   }
   
-  const cl = 0.7 * crcl;
+  /**
+   * UPDATED CLEARANCE (Cl) CALCULATION based on handwritten note:
+   * If Cr Serum > 1.2 => Cl = (CrCl * 0.06) + 0.8
+   * If Cr Serum <= 1.2 => Cl = (CrCl * 0.06) + 0.9
+   */
+  let cl = (crcl * 0.06);
+  if (scr > 1.2) {
+    cl = cl + 0.8;
+  } else {
+    cl = cl + 0.9;
+  }
+
   const vd = 1.1 * weight;
   const k = cl / vd;
   const halfLife = k > 0 ? 0.693 / k : 0;
-  const auc = cl > 0 ? dose / cl : 0;
-  const cmax = vd > 0 ? dose / vd : 0;
+  const auc = cl > 0 ? doseValue / cl : 0;
+  const cmax = vd > 0 ? doseValue / vd : 0;
+  
+  // BMI
+  let bmi = "0";
+  if (height > 0) {
+    bmi = (weight / Math.pow(height / 100, 2)).toFixed(1);
+  }
 
   // 3. Dose Recommendation
-  // Logic based on FDA Label / Sanford Guide
   let doseRec;
-  const h24 = lang === 'ar' ? 'كل 24 ساعة' : 'every 24 hours';
-  const h48 = lang === 'ar' ? 'كل 48 ساعة' : 'every 48 hours';
-  const afterDialysis = lang === 'ar' ? '(أو بعد غسيل الكلى)' : '(or after dialysis)';
 
   if (crcl >= 50) {
-    // Normal Renal Function
     doseRec = {
-      status: lang === 'ar' ? 'وظائف كلى طبيعية' : "Normal Renal Function",
-      regimen: `${dose}mg ${h24}`,
-      initial: `${dose}mg`,
-      maintenance: `${dose}mg ${h24}`
+      status: t.normalRenal,
+      regimen: `${doseValue}mg ${t.h24}`,
+      initial: `${doseValue}mg`,
+      maintenance: `${doseValue}mg ${t.h24}`
     };
   } else if (crcl >= 20 && crcl < 50) {
-    // Mild to Moderate
-    // 750mg -> 750mg q48h
-    // 500mg -> 500mg then 250mg q24h
-    // 250mg -> 250mg q24h (no adjustment)
-    
     let regimen = "";
-    let initial = `${dose}mg`;
     let maintenance = "";
 
-    if (dose === 750) {
-      regimen = lang === 'ar' ? "750mg كل 48 ساعة" : "750mg every 48 hours";
-      maintenance = lang === 'ar' ? "750mg كل 48 ساعة" : "750mg every 48 hours";
-    } else if (dose === 500) {
-      regimen = lang === 'ar' ? "أولية 500mg، ثم 250mg كل 24 ساعة" : "Initial 500mg, then 250mg every 24h";
-      maintenance = `250mg ${h24}`;
-    } else { // 250
-      regimen = lang === 'ar' ? "250mg كل 24 ساعة (لا تغيير)" : "250mg every 24 hours (No adjustment)";
-      maintenance = `250mg ${h24}`;
+    if (doseValue === 750) {
+      regimen = t.regimenMild750;
+      maintenance = t.regimenMild750;
+    } else if (doseValue === 500) {
+      regimen = t.regimenMild500;
+      maintenance = `250mg ${t.h24}`;
+    } else {
+      regimen = t.regimenMild250;
+      maintenance = `250mg ${t.h24}`;
     }
 
     doseRec = {
-      status: lang === 'ar' ? 'قصور كلوي خفيف إلى متوسط' : "Mild to Moderate Renal Impairment",
+      status: t.mildModRenal,
       regimen,
-      initial,
+      initial: `${doseValue}mg`,
       maintenance
     };
-
   } else if (crcl >= 10 && crcl < 20) {
-    // Severe
-    // 750mg -> 750mg then 500mg q48h
-    // 500mg -> 500mg then 250mg q48h
-    // 250mg -> 250mg q48h (except uncomplicated UTI)
-    
     let regimen = "";
-    let initial = `${dose}mg`;
     let maintenance = "";
 
-    if (dose === 750) {
-      regimen = lang === 'ar' ? "أولية 750mg، ثم 500mg كل 48 ساعة" : "Initial 750mg, then 500mg every 48h";
-      maintenance = `500mg ${h48}`;
-    } else if (dose === 500) {
-      regimen = lang === 'ar' ? "أولية 500mg، ثم 250mg كل 48 ساعة" : "Initial 500mg, then 250mg every 48h";
-      maintenance = `250mg ${h48}`;
-    } else { // 250
-      regimen = lang === 'ar' ? "250mg كل 48 ساعة" : "250mg every 48 hours";
-      maintenance = `250mg ${h48}`;
+    if (doseValue === 750) {
+      regimen = t.regimenSevere750;
+      maintenance = `500mg ${t.h48}`;
+    } else if (doseValue === 500) {
+      regimen = t.regimenSevere500;
+      maintenance = `250mg ${t.h48}`;
+    } else {
+      regimen = t.regimenSevere250;
+      maintenance = `250mg ${t.h48}`;
     }
 
     doseRec = {
-      status: lang === 'ar' ? 'قصور كلوي شديد' : "Severe Renal Impairment",
+      status: t.severeRenal,
       regimen,
-      initial,
+      initial: `${doseValue}mg`,
       maintenance
     };
-
   } else {
-    // ESRD / Dialysis
-    // 750mg -> 750mg then 500mg q48h
-    // 500mg -> 500mg then 250mg q48h
-    // 250mg -> 250mg q48h
-    
     let regimen = "";
-    let initial = `${dose}mg`;
     let maintenance = "";
 
-    if (dose === 750) {
-      regimen = lang === 'ar' ? "أولية 750mg، ثم 500mg كل 48 ساعة أو بعد الغسيل" : "Initial 750mg, then 500mg every 48h or after dialysis";
-      maintenance = `500mg ${h48} ${afterDialysis}`;
-    } else if (dose === 500) {
-      regimen = lang === 'ar' ? "أولية 500mg، ثم 250mg كل 48 ساعة أو بعد الغسيل" : "Initial 500mg, then 250mg every 48h or after dialysis";
-      maintenance = `250mg ${h48} ${afterDialysis}`;
-    } else { // 250
-      regimen = lang === 'ar' ? "250mg كل 48 ساعة أو بعد الغسيل" : "250mg every 48h or after dialysis";
-      maintenance = `250mg ${h48} ${afterDialysis}`;
+    if (doseValue === 750) {
+      regimen = t.regimenESRD750;
+      maintenance = `500mg ${t.h48} ${t.afterDialysis}`;
+    } else if (doseValue === 500) {
+      regimen = t.regimenESRD500;
+      maintenance = `250mg ${t.h48} ${t.afterDialysis}`;
+    } else {
+      regimen = t.regimenESRD250;
+      maintenance = `250mg ${t.h48} ${t.afterDialysis}`;
     }
 
     doseRec = {
-      status: lang === 'ar' ? 'فشل كلوي نهائي/غسيل كلى' : "ESRD/Hemodialysis",
+      status: t.esrdRenal,
       regimen,
-      initial,
+      initial: `${doseValue}mg`,
       maintenance
     };
   }
@@ -171,50 +165,50 @@ export const calculateResults = (formData: FormData, lang: Lang): CalculationRes
   let score = 0;
   const factors = [];
   
-  if (parseFloat(formData.age) > 65) {
+  if (age > 65) {
     score++;
-    factors.push(lang === 'ar' ? 'العمر > 65' : "Age > 65");
+    factors.push(t.ageFactor);
   }
   if (formData.gender === 'female') {
     score++;
-    factors.push(lang === 'ar' ? 'أنثى' : "Female sex");
+    factors.push(t.femaleFactor);
   }
   if (formData.heartDisease) {
     score++;
-    factors.push(lang === 'ar' ? 'أمراض القلب' : "Heart disease");
+    factors.push(t.heartFactor);
   }
   const kPot = parseFloat(formData.potassium);
   if (kPot && kPot < 3.5) {
     score++;
-    factors.push(lang === 'ar' ? 'انخفاض البوتاسيوم' : "Low potassium");
+    factors.push(t.kFactor);
   }
   const mg = parseFloat(formData.magnesium);
   if (mg && mg < 1.7) {
     score++;
-    factors.push(lang === 'ar' ? 'انخفاض المغنيسيوم' : "Low magnesium");
+    factors.push(t.mgFactor);
   }
   const ca = parseFloat(formData.calcium);
   if (ca && ca < 8.5) {
     score++;
-    factors.push(lang === 'ar' ? 'انخفاض الكالسيوم' : "Low calcium");
+    factors.push(t.caFactor);
   }
   if (formData.antiarrhythmics || formData.antipsychotics || formData.antidepressants || 
       formData.macrolides || formData.antifungals || formData.otherQtDrugs) {
     score++;
-    factors.push(lang === 'ar' ? 'أدوية تطيل QT' : "QT-prolonging medication");
+    factors.push(t.drugFactor);
   }
 
   let level = t.lowRisk;
-  let recommendation = lang === 'ar' ? "يوصى بالمراقبة الروتينية" : "Routine monitoring recommended";
+  let recommendation = t.routineMonitor;
   let color: 'green' | 'orange' | 'red' = "green";
   
   if (score >= 5) {
     level = t.highRisk;
-    recommendation = lang === 'ar' ? "⚠️ خطر مرتفع - استشر الطبيب فوراً قبل الإعطاء" : "⚠️ HIGH RISK - Consult doctor immediately before administration";
+    recommendation = t.highRiskMonitor;
     color = "red";
   } else if (score >= 3) {
     level = t.modRisk;
-    recommendation = lang === 'ar' ? "مراقبة عن كثب، النظر في تخطيط قلب أساسي ومتابعة" : "Monitor closely, consider baseline and follow-up ECG";
+    recommendation = t.modRiskMonitor;
     color = "orange";
   }
 
@@ -222,28 +216,16 @@ export const calculateResults = (formData: FormData, lang: Lang): CalculationRes
   const warnings: { type: 'danger' | 'warning' | 'info'; text: string }[] = [];
   
   if (formData.corticosteroids) {
-    warnings.push({ 
-      type: "danger", 
-      text: lang === 'ar' ? "خطر تمزق الأوتار مع استخدام الكورتيكوستيرويدات المتزامن" : "Risk of tendon rupture with concurrent corticosteroid use" 
-    });
+    warnings.push({ type: "danger", text: t.tendonWarning });
   }
   if (formData.diabetesMeds) {
-    warnings.push({ 
-      type: "warning", 
-      text: lang === 'ar' ? "خطر نقص سكر الدم الشديد - راقب سكر الدم عن كثب" : "Risk of severe hypoglycemia - monitor blood glucose closely" 
-    });
+    warnings.push({ type: "warning", text: t.hypoglycemiaWarning });
   }
   if (formData.nsaids) {
-    warnings.push({ 
-      type: "warning", 
-      text: lang === 'ar' ? "زيادة خطر النوبات مع مضادات الالتهاب غير الستيرويدية" : "Increased seizure risk with NSAIDs" 
-    });
+    warnings.push({ type: "warning", text: t.seizureWarning });
   }
   if (formData.caffeine || formData.alcohol) {
-    warnings.push({ 
-      type: "info", 
-      text: lang === 'ar' ? "قد يزيد من الدوخة والغثيان وتأثيرات الجهاز العصبي المركزي" : "May increase dizziness, nausea, and CNS effects" 
-    });
+    warnings.push({ type: "info", text: t.cnsWarning });
   }
 
   return {
@@ -258,7 +240,8 @@ export const calculateResults = (formData: FormData, lang: Lang): CalculationRes
       halfLife: halfLife.toFixed(2),
       auc: auc.toFixed(2),
       cmax: cmax.toFixed(2),
-      tmax: '1-2'
+      tmax: '1-2',
+      bmi
     },
     doseRec,
     qtRisk: { score, factors, level, recommendation, color },

@@ -1,17 +1,17 @@
-# Levofloxacin Dosing Calculator
+# LevoCalc - Levofloxacin Dosing Calculator
 
 A clinical decision support tool designed to assist healthcare professionals in calculating Levofloxacin dosing, assessing safety parameters (QTc risk, contraindications), and managing patient history.
 
 ## Features
 
-- **Renal Dosing Calculator**: Automatically calculates Creatinine Clearance (Cockcroft-Gault) and recommends dosing regimens (Oral/IV) based on renal function (Normal, Mild/Moderate, Severe, ESRD).
+- **Renal Dosing Calculator**: Automatically calculates Creatinine Clearance (Cockcroft-Gault) and recommends dosing regimens (Oral/IV) based on renal function.
 - **Pharmacokinetic Analysis**: Estimates CL, Vd, t½, AUC, and Cmax.
 - **Safety Assessment**:
   - **Contraindication Check**: Age < 18, Pregnancy, Myasthenia Gravis, Epilepsy, Allergy.
   - **QT Prolongation Risk**: Tisdale-like risk scoring algorithm (Low, Moderate, High).
   - **Drug-Drug Interactions**: Checks for QT-prolonging meds, corticosteroids, NSAIDs, etc.
 - **Patient History**: Local database (IndexedDB) to save and retrieve previous patient assessments.
-- **Multi-language Support**: Full English and Arabic UI.
+- **Multi-language Support**: Full English and Professional Egyptian-style Arabic UI.
 - **Print Friendly**: Dedicated print layout for medical records.
 
 ## Tech Stack
@@ -22,14 +22,6 @@ A clinical decision support tool designed to assist healthcare professionals in 
 - **Styling**: Tailwind CSS
 - **Database**: IndexedDB (Client-side storage)
 - **Icons**: Lucide React
-
-## File Structure
-
-- **`App.tsx`**: Main application controller and UI layout.
-- **`logic.ts`**: Core medical algorithms (CrCl, PK parameters, QT scoring).
-- **`db.ts`**: IndexedDB service for persistent patient storage.
-- **`constants.ts`**: Static data, initial states, and translation dictionaries.
-- **`types.ts`**: TypeScript interfaces for type safety.
 
 ## Local Development
 
@@ -55,8 +47,6 @@ This project is configured for easy deployment on Netlify.
     - **Build command**: `npm run build`
     - **Publish directory**: `dist`
 4.  **Deploy**: Click "Deploy site".
-
-Netlify will automatically detect the `package.json` and build the application using Vite.
 
 ## Disclaimer
 
